@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Whitney Clarke — Visual Judgment</title>
+  <meta name="description" content="Whitney Clarke judges photograph pairs for light, composition, focus, and strict brand adherence. Fifteen years of frontend design and development.">
+  <meta name="theme-color" content="#f3f0e8">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f3f0e8' width='32' height='32'/%3E%3Crect fill='%238f3d32' x='8' y='8' width='16' height='16'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f3f0e8;
+      --ink: #1c1b17;
+      --muted: rgba(28, 27, 23, 0.64);
+      --faint: rgba(28, 27, 23, 0.46);
+      --line: rgba(28, 27, 23, 0.16);
+      --verdict: #8f3d32;
+      --serif: "Instrument Serif", "Iowan Old Style", Palatino, Georgia, serif;
+      --sans: "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.5;
+      font-weight: 400;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    html, body { max-width: 100%; overflow-x: clip; }
+    a { color: inherit; }
+    :focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+    ::selection { background: #e4cfc8; color: var(--ink); }
+
+    .skip {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.5rem 0.75rem;
+      z-index: 20;
+    }
+    .skip:focus { top: 0.75rem; }
+
+    .wrap {
+      width: min(1180px, calc(100% - 2.5rem));
+      margin-inline: auto;
+      min-width: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(243, 240, 232, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      min-height: 3.5rem;
+    }
+    .brand {
+      text-decoration: none;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+    .brand-note {
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--faint);
+    }
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 1.25rem;
+    }
+    nav a {
+      text-decoration: none;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    nav a:hover { color: var(--ink); }
+
+    .intro {
+      padding: 7.5rem 0 4.5rem;
+    }
+    .eyebrow {
+      margin: 0 0 1.5rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0;
+      max-width: 11.5ch;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(3.1rem, 7.4vw, 6.4rem);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+    h1 em { font-style: italic; }
+    .lede {
+      max-width: 38rem;
+      margin: 2rem 0 0;
+      font-size: 1.15rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .facts-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      margin: 2.25rem 0 0;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--faint);
+    }
+
+    section { scroll-margin-top: 4.25rem; }
+    .section-label {
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .section-title {
+      margin: 0 0 2.5rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .pair {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(200px, 0.78fr);
+      gap: 1.15rem 1.2rem;
+      padding: 2.4rem 0 3.2rem;
+      border-top: 1px solid var(--line);
+    }
+    .pair-head {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      margin-bottom: 0.35rem;
+    }
+    .pair-num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--verdict);
+    }
+    .pair h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.85rem;
+      letter-spacing: -0.02em;
+    }
+    .plate { margin: 0; position: relative; min-width: 0; }
+    .plate img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      background: #e6e1d6;
+    }
+    .plate.is-selected img { box-shadow: inset 0 0 0 1px var(--verdict); }
+    .tag {
+      position: absolute;
+      top: 0.65rem;
+      left: 0.65rem;
+      background: var(--paper);
+      color: var(--verdict);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.64rem;
+      font-weight: 500;
+      padding: 0.32rem 0.45rem;
+    }
+    figcaption {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem;
+      align-items: baseline;
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+    figcaption b {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.35rem;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .is-selected figcaption b { color: var(--verdict); }
+    .verdict { padding-top: 0.15rem; }
+    .kicker {
+      margin: 0;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--verdict);
+    }
+    .mark {
+      margin: 0.35rem 0 0.85rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 5.2rem;
+      line-height: 0.8;
+      color: var(--verdict);
+      letter-spacing: -0.04em;
+    }
+    .reason {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+    .reason + .reason { margin-top: 0.8rem; color: var(--muted); }
+
+    .criteria { padding: 1rem 0 4.5rem; }
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+    }
+    .rule {
+      padding: 1.4rem 1.25rem 1.6rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .rule + .rule { padding-left: 1.25rem; border-left: 1px solid var(--line); }
+    .rule span {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--verdict);
+      margin-bottom: 0.8rem;
+    }
+    .rule h3 {
+      margin: 0 0 0.55rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.85rem;
+      letter-spacing: -0.02em;
+    }
+    .rule p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .closer {
+      margin: 2rem 0 0;
+      max-width: 28rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.7rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .projects { padding: 1rem 0 4.5rem; }
+    .project {
+      display: grid;
+      grid-template-columns: 4.2rem minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 1.25rem 2.25rem;
+      align-items: start;
+      padding: 2.1rem 0 2.3rem;
+      border-top: 1px solid var(--line);
+    }
+    .project-num {
+      margin: 0.35rem 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--verdict);
+    }
+    .project h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.85rem, 3vw, 2.45rem);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .project .when {
+      margin: 0.55rem 0 0;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      color: var(--faint);
+    }
+    .project .brief {
+      margin: 0.9rem 0 0;
+      color: var(--muted);
+      max-width: 40rem;
+    }
+    .scope { margin: 0.15rem 0 0; }
+    .scope div {
+      display: grid;
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+      gap: 0.75rem;
+      padding: 0.7rem 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    .scope dt {
+      margin: 0;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      color: var(--faint);
+      padding-top: 0.28rem;
+    }
+    .scope dd { margin: 0; }
+
+    .work { padding-bottom: 2rem; }
+    .study {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.55fr);
+      gap: 2rem 2.5rem;
+      align-items: start;
+      padding: 2.2rem 0;
+      border-top: 1px solid var(--line);
+    }
+    .study-num {
+      margin: 0;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--verdict);
+    }
+    .study h3 {
+      margin: 0.25rem 0 0.8rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+    .study p { margin: 0; color: var(--muted); max-width: 40rem; }
+    .study img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      background: #e6e1d6;
+    }
+
+    .about { padding: 1rem 0 5rem; }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.7fr;
+      gap: 3rem;
+      border-top: 1px solid var(--line);
+      padding-top: 2rem;
+    }
+    .about h2 {
+      margin: 0 0 1rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .about-copy p { margin: 0 0 1rem; color: var(--muted); max-width: 38rem; }
+    .dossier { margin: 0; }
+    .dossier div {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    .dossier dt {
+      margin: 0;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      color: var(--faint);
+      padding-top: 0.28rem;
+    }
+    .dossier dd { margin: 0; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 1.1rem 0 1.6rem;
+    }
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      color: var(--faint);
+    }
+
+    @media (max-width: 900px) {
+      .pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .verdict { grid-column: 1 / -1; max-width: 38rem; }
+      .mark { font-size: 4rem; }
+      .rules { grid-template-columns: 1fr 1fr; }
+      .rule:nth-child(3) { padding-left: 0; border-left: 0; }
+      .rule:nth-child(even) { padding-left: 1.25rem; }
+      .study, .about-grid, .project { grid-template-columns: minmax(0, 1fr); }
+      .project-num { margin-top: 0; }
+      .study img { max-width: 280px; }
+    }
+    @media (max-width: 640px) {
+      .brand-note { display: none; }
+      .bar {
+        flex-wrap: wrap;
+        align-items: flex-end;
+        padding: 0.75rem 0 0.6rem;
+        row-gap: 0.35rem;
+      }
+      nav {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.4rem;
+      }
+      nav a { letter-spacing: 0.08em; }
+      .intro { padding-top: 4.5rem; }
+      .pair { grid-template-columns: minmax(0, 1fr); }
+      .rules { grid-template-columns: 1fr; }
+      .rule, .rule + .rule, .rule:nth-child(even) {
+        padding-left: 0;
+        border-left: 0;
+      }
+      h1 { max-width: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body id="top">
+  <a class="skip" href="#pairs">Skip to pairs</a>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="#top">Whitney Clarke</a>
+      <span class="brand-note">Visual judgment</span>
+      <nav aria-label="Page">
+        <a href="#pairs">Pairs</a>
+        <a href="#projects">Projects</a>
+        <a href="#criteria">Criteria</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="wrap">
+        <p class="eyebrow">Image quality · Brand guidelines · Independent</p>
+        <h1>The difference between two good photographs is usually <em>one decision.</em></h1>
+        <p class="lede">I judge pairs for light, composition, focus, and whether the frame actually follows the brand it belongs to. Fifteen years of frontend design and engineering is where that habit came from: style guides, crop rules, color limits, and the discipline to pick one winner when both options are close.</p>
+        <p class="facts-row">
+          <span>Whitney Clarke</span>
+          <span>Fifteen years</span>
+          <span>Frontend design</span>
+          <span>Remote</span>
+          <span>Independent contractor</span>
+        </p>
+      </div>
+    </section>
+
+    <section id="pairs">
+      <div class="wrap">
+        <p class="section-label">Calibration</p>
+        <h2 class="section-title">Three pairs. One winner each.</h2>
+
+        <article class="pair">
+          <header class="pair-head">
+            <span class="pair-num">01</span>
+            <h3>Product, warm ground</h3>
+          </header>
+          <figure class="plate">
+            <img src="assets/pair-01-a.jpg" alt="Amber glass bottle centered on a cool gray ground, with a second highlight on the shoulder and a clipped label.">
+            <figcaption><b>A</b><span>Centered. Cool ground. Label clipped.</span></figcaption>
+          </figure>
+          <figure class="plate is-selected">
+            <span class="tag">Selected</span>
+            <img src="assets/pair-01-b.jpg" alt="Amber glass bottle placed on the left third of a warm linen ground, lit by a single key from the left.">
+            <figcaption><b>B</b><span>Left third. One key. Warm ground.</span></figcaption>
+          </figure>
+          <div class="verdict">
+            <p class="kicker">Selected</p>
+            <p class="mark">B</p>
+            <p class="reason">B wins. The bottle holds the left third, on the warm-neutral ground, with a quiet field left for the wordmark. One light, and the label keeps a tone.</p>
+            <p class="reason">A sits dead center on a cool gray that never falls off. The label clips toward white, and there is no open side for type. Only B follows the guide.</p>
+          </div>
+        </article>
+
+        <article class="pair">
+          <header class="pair-head">
+            <span class="pair-num">02</span>
+            <h3>Portrait, editorial crop</h3>
+          </header>
+          <figure class="plate is-selected">
+            <span class="tag">Selected</span>
+            <img src="assets/pair-02-a.jpg" alt="Editorial portrait with sharp focus on the near eye, full hair in frame, and open space on the right.">
+            <figcaption><b>A</b><span>Face left. Eyes sharp. Space on the right.</span></figcaption>
+          </figure>
+          <figure class="plate">
+            <img src="assets/pair-02-b.jpg" alt="Portrait with focus on the collar, hair cut by the top edge, and the subject pushed to the right edge.">
+            <figcaption><b>B</b><span>Face on the right edge. Space on the wrong side.</span></figcaption>
+          </figure>
+          <div class="verdict">
+            <p class="kicker">Selected</p>
+            <p class="mark">A</p>
+            <p class="reason">A wins. The face is set to the left, eyes sharp, hair inside the frame, and the right side stays empty for type.</p>
+            <p class="reason">B pushes the head to the right edge and leaves the empty field on the left, the side a wordmark cannot use. The collar starts to share the picture with the face. Cooler ground, less air above the hair.</p>
+          </div>
+        </article>
+
+        <article class="pair">
+          <header class="pair-head">
+            <span class="pair-num">03</span>
+            <h3>Interior, brand color</h3>
+          </header>
+          <figure class="plate">
+            <img src="assets/pair-03-a.jpg" alt="Dramatic interior with a cyan cast in the shadows, a blown-out window, and a gesture cut by the frame.">
+            <figcaption><b>A</b><span>Cyan shadow. Window blown. Gesture cropped.</span></figcaption>
+          </figure>
+          <figure class="plate is-selected">
+            <span class="tag">Selected</span>
+            <img src="assets/pair-03-b.jpg" alt="Calm interior with a warm greige wall, a clear horizon, and the figure’s gesture fully inside the frame.">
+            <figcaption><b>B</b><span>Warm wall. Horizon. Gesture complete.</span></figcaption>
+          </figure>
+          <div class="verdict">
+            <p class="kicker">Selected</p>
+            <p class="mark">B</p>
+            <p class="reason">B is the only frame inside the palette. The wall reads as the brand neutral, the window holds detail, and the figure has a horizon and a place to stand.</p>
+            <p class="reason">A is more dramatic and breaks the guide: a cyan cast in the shadow, a blown window, and a crop that cuts the gesture. Drama is not the standard. The standard is.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="projects" id="projects">
+      <div class="wrap">
+        <p class="section-label">Practice</p>
+        <h2 class="section-title">Frontend, designed and built.</h2>
+
+        <article class="project">
+          <p class="project-num">01</p>
+          <div>
+            <h3>Lumen Press</h3>
+            <p class="when">2010 — 2014 · Editorial</p>
+            <p class="brief">The reading page was the product. I designed the measure, the caption, and the crop for every plate, then built the templates so an editor could not publish a hero that broke the ratio or sat on the wrong ground. The guide was the layout. That is where the habit of a definitive visual call started.</p>
+          </div>
+          <dl class="scope">
+            <div>
+              <dt>Role</dt>
+              <dd>Design and frontend</dd>
+            </div>
+            <div>
+              <dt>Designed</dt>
+              <dd>Article template, plate crop, caption, type scale</dd>
+            </div>
+            <div>
+              <dt>Built</dt>
+              <dd>HTML and CSS templates, a ratio lock, a ground color that rejected an off-palette frame</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="project">
+          <p class="project-num">02</p>
+          <div>
+            <h3>Northwharf</h3>
+            <p class="when">2014 — 2018 · Product</p>
+            <p class="brief">An operations console for a freight desk. The screens were dense, and the visual system had to stay quiet while the data did not. I designed the hierarchy and built the React set behind it: tables, filters, empty states, and one red reserved for a decision. Focus order, contrast, and a name on every control were part of the layout, not a pass at the end.</p>
+          </div>
+          <dl class="scope">
+            <div>
+              <dt>Role</dt>
+              <dd>Product design and frontend</dd>
+            </div>
+            <div>
+              <dt>Designed</dt>
+              <dd>Information hierarchy, status, empty states, the quiet palette</dd>
+            </div>
+            <div>
+              <dt>Built</dt>
+              <dd>React component library, TypeScript as the surface grew, accessible controls</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="project">
+          <p class="project-num">03</p>
+          <div>
+            <h3>Calder Goods</h3>
+            <p class="when">2018 — 2021 · Commerce</p>
+            <p class="brief">Product photography was the page. I designed the gallery, the still-life crop, and the type that sits in the open space, then built it in Next.js so the rule was code. Left third, warm ground, label held — or the frame did not ship. The prettier photograph lost when it broke the guide.</p>
+          </div>
+          <dl class="scope">
+            <div>
+              <dt>Role</dt>
+              <dd>Design and frontend</dd>
+            </div>
+            <div>
+              <dt>Designed</dt>
+              <dd>Gallery, crop, type beside the product, brand color</dd>
+            </div>
+            <div>
+              <dt>Built</dt>
+              <dd>Next.js storefront, image component, tokens for color and ratio</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="project">
+          <p class="project-num">04</p>
+          <div>
+            <h3>Common Room</h3>
+            <p class="when">2021 — 2026 · Design system</p>
+            <p class="brief">One system across four product surfaces. I designed the type scale, the space scale, and the color and image rules for each brand, then built them in React and TypeScript. A new surface could theme the color. It could not invent a second crop, a second highlight, or a type size that was not on the scale. The documentation lived next to the components.</p>
+          </div>
+          <dl class="scope">
+            <div>
+              <dt>Role</dt>
+              <dd>Design engineering</dd>
+            </div>
+            <div>
+              <dt>Designed</dt>
+              <dd>Tokens, brand themes, image rules, component specs</dd>
+            </div>
+            <div>
+              <dt>Built</dt>
+              <dd>React and TypeScript library, shared tokens, docs beside the code</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="criteria" id="criteria">
+      <div class="wrap">
+        <p class="section-label">Baseline</p>
+        <h2 class="section-title">The rules, applied without softening.</h2>
+        <div class="rules">
+          <article class="rule">
+            <span>01</span>
+            <h3>Light</h3>
+            <p>Direction, number of sources, clipped highlights, and whether the shadow describes the form.</p>
+          </article>
+          <article class="rule">
+            <span>02</span>
+            <h3>Composition</h3>
+            <p>Placement, crop, negative space, and whether the frame still leaves room for type.</p>
+          </article>
+          <article class="rule">
+            <span>03</span>
+            <h3>Focus</h3>
+            <p>The plane of sharpness belongs on the thing that matters. Blur may not compete with it.</p>
+          </article>
+          <article class="rule">
+            <span>04</span>
+            <h3>Brand</h3>
+            <p>Palette, ratio, clear space, prohibited treatments. A beautiful frame that breaks the guide loses.</p>
+          </article>
+        </div>
+        <p class="closer">Close pairs still have a winner. I pick it and I write the reason.</p>
+      </div>
+    </section>
+
+    <section class="work" id="work">
+      <div class="wrap">
+        <p class="section-label">Selected decisions</p>
+        <h2 class="section-title">The same call, in the work.</h2>
+
+        <article class="study">
+          <div>
+            <p class="study-num">01</p>
+            <h3>One light, left third</h3>
+            <p>A still-life guide allowed a warm-neutral ground and a product set off center so the wordmark had room. Frame A fails it: centered on a cool gray, label clipped toward white, no open side. Frame B is the file that leaves the studio. The rule then lives in the layout — a crop component and a ground token — so the next frame cannot drift back to center.</p>
+          </div>
+          <img src="assets/pair-01-b.jpg" alt="The selected product photograph, bottle on the left third.">
+        </article>
+
+        <article class="study">
+          <div>
+            <p class="study-num">02</p>
+            <h3>Focus where the face is</h3>
+            <p>The editorial rule is short. Eyes sharp. Hair inside the frame. Clear space kept on the side the type will use. A holds all three. B is the tighter crop and the wrong one: the head sits on the right edge, the empty field falls on the left, and the collar starts to compete. On a product surface the same rule decides the hero. The face, or the label, keeps the quiet side.</p>
+          </div>
+          <img src="assets/pair-02-a.jpg" alt="The selected portrait, focused on the near eye.">
+        </article>
+
+        <article class="study">
+          <div>
+            <p class="study-num">03</p>
+            <h3>The palette is the standard</h3>
+            <p>The dramatic frame was available. The guide did not ask for it. A puts a cyan cast in the shadow, blows the window, and cuts the hand. B keeps the wall on the brand neutral, gives the figure a horizon, and leaves the gesture whole. In the interface that choice is a color limit, not a mood. If the shadow leaves the neutral, the image does not ship.</p>
+          </div>
+          <img src="assets/pair-03-b.jpg" alt="The selected interior, warm neutral wall and a complete gesture.">
+        </article>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="wrap">
+        <p class="section-label">About</p>
+        <div class="about-grid">
+          <div class="about-copy">
+            <h2>Fifteen years on the visual layer.</h2>
+            <p>Whitney Clarke is a senior designer-engineer. The work is frontend design and the engineering that keeps a visual standard in place: which photograph is chosen, which crop survives a brand guide, and which rule the interface is willing to enforce.</p>
+            <p>Judging a pair against a written baseline is the same decision, made in the open. One winner. The reason in a few sentences. No softening when the prettier frame breaks the guide.</p>
+          </div>
+          <dl class="dossier">
+            <div>
+              <dt>Practice</dt>
+              <dd>Frontend design and development</dd>
+            </div>
+            <div>
+              <dt>Tenure</dt>
+              <dd>Fifteen years, senior</dd>
+            </div>
+            <div>
+              <dt>Engagement</dt>
+              <dd>Independent contractor</dd>
+            </div>
+            <div>
+              <dt>Where</dt>
+              <dd>Fully remote, on desktop</dd>
+            </div>
+            <div>
+              <dt>Schedule</dt>
+              <dd>Own hours. Weekly, on work delivered.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>Whitney Clarke</span>
+      <span>Visual judgment</span>
+    </div>
+  </footer>
+</body>
+</html>
